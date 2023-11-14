@@ -1,2 +1,2 @@
 # CD_IST
-Data Science - 5/01 2024
+Data Science - 5/01/2024
