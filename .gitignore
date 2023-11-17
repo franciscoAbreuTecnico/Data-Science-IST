@@ -1,0 +1,28 @@
+# Ignore all log files
+*.log
+
+# Ignore node_modules folder in Node.js projects
+data_services/__pycache__/
+
+# Ignore compiled binary files
+*.bin
+*.exe
+*.o
+
+# Ignore build directories
+/build/
+/dist/
+
+# Ignore temporary files and directories
+*.tmp
+*.temp
+*~
+
+# Ignore files related to version control systems
+.git
+.svn
+.hg
+
+# Ignore IDE and editor specific files
+.vscode/
+.idea/
