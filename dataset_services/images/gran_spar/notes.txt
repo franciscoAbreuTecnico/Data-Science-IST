@@ -1,0 +1,23 @@
+Column Credit_History_Age was converted from symbolic to numerical.
+Column Payment_Behaviour was split into Payment_Behaviour_Spend and Payment_Behaviour_Value since analysing Payment_Behaviour gave no real insight.
+Most of obvious erroneous input values were removed from columns and replaced with NaN.
+In the Sparsity analysis, column "Type_of_Loan" was encoded into numerical values to allow for the final figure generation (there are over 6000 different combinations in this column, forcing too much of a load onto the pyplot functions).
+
+This was the mapping for the new "JobType" column in the granularity analysis:
+
+Scientist -> STEM
+Doctor -> STEM
+Surgeon -> STEM
+Engineer -> STEM
+Entrepreneur -> Business
+Manager -> Business
+Teacher -> Services
+Developer -> Services
+Media_Manager -> Media
+Lawyer -> Services
+Journalist -> Media
+Accountant -> Services
+Musician -> Creative Arts
+Writer -> Creative Arts
+Architect -> STEM
+Mechanic -> STEM
