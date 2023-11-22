@@ -256,6 +256,13 @@ def encode_cyclic_variables(data, vars):
         data[v+'_sin'] = data[v].apply(lambda x: round(sin(2*pi*x/x_max), 3))
         data[v+'_cos'] = data[v].apply(lambda x: round(cos(2*pi*x/x_max), 3))
 
+def encode_cyclic_variables_2 (data: DataFrame, vars: list[str]) -> None:
+    for v in vars:
+        x_max: float | int = max(data[v])
+        data[v + "_sin"] = data[v].apply(lambda x: round(sin(2 * pi * x / x_max), 3))
+        data[v + "_cos"] = data[v].apply(lambda x: round(cos(2 * pi * x / x_max), 3))
+    return
+
 def dummify(df, vars_to_dummify):
     other_vars = [c for c in df.columns if not c in vars_to_dummify]
 
