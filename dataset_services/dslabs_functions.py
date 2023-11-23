@@ -276,6 +276,19 @@ def dummify(df, vars_to_dummify):
     final_df = concat([df[other_vars], dummy], axis=1)
     return final_df
 
+def dummify_numeric(df, vars_to_dummify):
+    other_vars = [c for c in df.columns if not c in vars_to_dummify]
+
+    # Changed dtype from bool to int
+    enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False, dtype=int, drop='if_binary')
+    trans = enc.fit_transform(df[vars_to_dummify])
+
+    new_vars = enc.get_feature_names_out(vars_to_dummify)
+    dummy = DataFrame(trans, columns=new_vars, index=df.index)
+
+    final_df = concat([df[other_vars], dummy, df[['Credit_Score']]], axis=1)
+    return final_df
+
 def mvi_by_dropping(data: DataFrame, min_pct_per_variable:float=0.1, min_pct_per_record: float=0.0) -> DataFrame:
     '''
         data: DataFrame - the data to clean
