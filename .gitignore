@@ -27,5 +27,3 @@ __pycache__/
 .vscode/
 .idea/
 
-*.csv
-
