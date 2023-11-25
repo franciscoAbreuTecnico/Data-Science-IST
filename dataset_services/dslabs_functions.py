@@ -647,10 +647,11 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
 def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
     estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
         "GaussianNB": GaussianNB(),
-        "MultinomialNB": MultinomialNB(),
+        #"MultinomialNB": MultinomialNB(),
         "BernoulliNB": BernoulliNB(),
     }
-    best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
+    #best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
+    best_model: GaussianNB | BernoulliNB = None  # type: ignore
     best_performance: float = 0.0
     eval: dict[str, float] = {}
 
@@ -698,7 +699,7 @@ def evaluate_approach(
     eval: dict[str, list] = {}
 
     eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
-    eval_KNN: dict[str, float] | None = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
+    eval_KNN: dict[str, float] | None = run_KNN_2(trnX, trnY, tstX, tstY, metric=metric)
     if eval_NB != {} and eval_KNN != {}:
         for met in CLASS_EVAL_METRICS:
             eval[met] = [eval_NB[met], eval_KNN[met]]
@@ -905,9 +906,9 @@ full_prime_list = [
 ]
 
 # Select approximately 20 prime numbers with almost constant differences
-selected_primes = [full_prime_list[int(i)] for i in np.linspace(0, len(full_prime_list) - 1, 20)]
+selected_primes = [full_prime_list[int(i)] for i in np.linspace(0, len(full_prime_list) - 1, 10)]
 
-def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
+def run_KNN_2(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
     best_model = None
     best_performance = 0
     eval = {}
