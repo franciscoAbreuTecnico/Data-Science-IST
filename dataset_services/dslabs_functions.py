@@ -21,6 +21,7 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from pandas import DataFrame, Series, Index, Period
 from pandas import read_csv, concat, to_numeric, to_datetime
 from pandas.api.types import is_integer_dtype, is_any_real_numeric_dtype
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score
@@ -646,12 +647,14 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
 
 def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
     estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
+    #estimators: dict[str, GaussianNB | LogisticRegression | BernoulliNB] = {
         "GaussianNB": GaussianNB(),
         #"MultinomialNB": MultinomialNB(),
         "BernoulliNB": BernoulliNB(),
+        #"LogisticRegression": LogisticRegression(max_iter=1000),
     }
-    #best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
-    best_model: GaussianNB | BernoulliNB = None  # type: ignore
+    best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
+    #best_model: GaussianNB | BernoulliNB | LogisticRegression = None  # type: ignore
     best_performance: float = 0.0
     eval: dict[str, float] = {}
 
