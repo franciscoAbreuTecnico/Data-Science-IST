@@ -643,12 +643,18 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
 }
 
 
-def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
-    estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
-        "GaussianNB": GaussianNB(),
-        "MultinomialNB": MultinomialNB(),
-        "BernoulliNB": BernoulliNB(),
-    }
+def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy", estimators_names= ["GaussianNB", "MultinomialNB",  "BernoulliNB"]) -> dict[str, float]:
+    if "MultinomialNB" in estimators_names:
+        estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
+            "GaussianNB": GaussianNB(),
+            "MultinomialNB": MultinomialNB(),
+            "BernoulliNB": BernoulliNB(),
+        }
+    else:
+        estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
+            "GaussianNB": GaussianNB(),
+            "BernoulliNB": BernoulliNB(),
+        }
     best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
     best_performance: float = 0.0
     eval: dict[str, float] = {}
@@ -688,7 +694,7 @@ def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
 
 
 def evaluate_approach(
-    train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy"
+    train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy", estimators_names= ["GaussianNB", "MultinomialNB",  "BernoulliNB"]
 ) -> dict[str, list]:
     trnY = train.pop(target).values
     trnX: ndarray = train.values
@@ -696,7 +702,8 @@ def evaluate_approach(
     tstX: ndarray = test.values
     eval: dict[str, list] = {}
 
-    eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+
+    eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric, estimators_names=estimators_names)
     eval_KNN: dict[str, float] | None = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
     if eval_NB != {} and eval_KNN != {}:
         for met in CLASS_EVAL_METRICS:

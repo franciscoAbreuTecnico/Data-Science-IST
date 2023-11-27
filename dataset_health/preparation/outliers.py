@@ -6,7 +6,6 @@ from dslabs_functions import (
     mvi_by_filling,
     evaluate_approach)
 
-
 from numpy import ndarray
 from pandas import DataFrame, read_csv,Series
 from matplotlib.pyplot import savefig, show, figure
