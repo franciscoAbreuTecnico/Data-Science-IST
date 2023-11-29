@@ -16,11 +16,14 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.axes import Axes
 from matplotlib.pyplot import gca, gcf, savefig, subplots
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
+from matplotlib import pyplot as plt
 
 # from matplotlib.dates import _reset_epoch_test_example, set_epoch
 from pandas import DataFrame, Series, Index, Period
 from pandas import read_csv, concat, to_numeric, to_datetime
 from pandas.api.types import is_integer_dtype, is_any_real_numeric_dtype
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score
@@ -541,7 +544,7 @@ def study_variance_for_feature_selection(
         ylabel=metric,
         percentage=True,
     )
-    savefig(f"images/{file_tag}_fs_low_var_{metric}_study.png")
+    savefig(f"../data_preparation_images/feat_eng_result/{file_tag}_low_var_{metric}_study.png")
     return results
 
 
@@ -609,7 +612,7 @@ def study_redundancy_for_feature_selection(
         ylabel=metric,
         percentage=True,
     )
-    savefig(f"images/{file_tag}_fs_redundancy_{metric}_study.png")
+    savefig(f"../data_preparation_images/feat_eng_result/{file_tag}_redundancy_{metric}_study.png")
     return results
 
 
@@ -704,6 +707,35 @@ def evaluate_approach(
         for met in CLASS_EVAL_METRICS:
             eval[met] = [eval_NB[met], eval_KNN[met]]
     return eval
+
+def evaluate_approach_2(train, test, target='class', metric='accuracy'):
+    trnY = train.pop(target).values
+    trnX = train.values
+    tstY = test.pop(target).values
+    tstX = test.values
+    eval = {}
+
+    eval_NB = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+    eval_KNN = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
+    predictions = {**eval_NB, **eval_KNN}
+    
+    # Plotting
+    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+    cnf_matrix = confusion_matrix(tstY, predictions['NB'])
+    plot_confusion_matrix(cnf_matrix, np.unique(tstY), ax=ax[0])
+    plot_roc_chart(tstY, predictions, ax=ax[1], target=target)
+    plt.show()
+
+# Generating a synthetic dataset
+X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, random_state=42)
+df = DataFrame(X)
+df['class'] = y
+
+# Splitting the dataset into train and test sets
+train_df, test_df = train_test_split(df, test_size=0.3, random_state=42)
+
+# Evaluating the approach
+evaluate_approach(train_df, test_df, target='class', metric='accuracy')
 
 
 def read_train_test_from_files(
