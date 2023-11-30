@@ -110,7 +110,20 @@ target_data: Series = test.pop(target)
 scaled_test: DataFrame = DataFrame(transf.transform(test), index=test.index)
 scaled_test[target] = target_data
 scaled_test_copy: DataFrame = scaled_test.copy(deep=True)
+scaled_test_copy2: DataFrame = scaled_test.copy(deep=True)
 
+
+df_pos_sample: DataFrame = DataFrame(
+    df_positives.sample(len(df_negatives), replace=True)
+)
+df_over: DataFrame = concat([df_pos_sample, df_negatives], axis=0)
+
+figure()
+eval: dict[str, list] = evaluate_approach(df_over, scaled_test_copy2, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+plot_multibar_chart(
+    ["NB", "KNN"], eval, title=f"Covid over evaluation", percentage=True
+)
+savefig(f"dataset_health/images/covid_over_eval.png")
 
 figure()
 eval: dict[str, list] = evaluate_approach(df_under, scaled_test, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
