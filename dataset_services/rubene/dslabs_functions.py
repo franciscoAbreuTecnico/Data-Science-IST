@@ -953,3 +953,69 @@ def run_KNN_2(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
             eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
 
     return eval
+
+def naive_Bayes_study(
+    trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, metric: str = "accuracy"
+) -> tuple:
+    estimators: dict = {
+        "GaussianNB": GaussianNB(),
+        #"MultinomialNB": MultinomialNB(),
+        "BernoulliNB": BernoulliNB(),
+    }
+
+    xvalues: list = []
+    yvalues: list = []
+    best_model = None
+    best_params: dict = {"name": "", "metric": metric, "params": ()}
+    best_performance = 0
+    for clf in estimators:
+        xvalues.append(clf)
+        estimators[clf].fit(trnX, trnY)
+        prdY: array = estimators[clf].predict(tstX)
+        eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if eval - best_performance > DELTA_IMPROVE:
+            best_performance: float = eval
+            best_params["name"] = clf
+            best_params[metric] = eval
+            best_model = estimators[clf]
+        yvalues.append(eval)
+        # print(f'NB {clf}')
+    plot_bar_chart(
+        xvalues,
+        yvalues,
+        title=f"Naive Bayes Models ({metric})",
+        ylabel=metric,
+        percentage=True,
+    )
+
+    return best_model, best_params
+
+def knn_study(
+        trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, k_max: int=19, lag: int=2, metric='accuracy'
+        ) -> tuple[KNeighborsClassifier | None, dict]:
+    dist: list[Literal['manhattan', 'euclidean', 'chebyshev']] = ['manhattan', 'euclidean', 'chebyshev']
+
+    kvalues: list[int] = [i for i in range(1, k_max+1, lag)]
+    best_model: KNeighborsClassifier | None = None
+    best_params: dict = {'name': 'KNN', 'metric': metric, 'params': ()}
+    best_performance: float = 0.0
+
+    values: dict[str, list] = {}
+    for d in dist:
+        y_tst_values: list = []
+        for k in kvalues:
+            clf = KNeighborsClassifier(n_neighbors=k, metric=d)
+            clf.fit(trnX, trnY)
+            prdY: array = clf.predict(tstX)
+            eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+            y_tst_values.append(eval)
+            if eval - best_performance > DELTA_IMPROVE:
+                best_performance: float = eval
+                best_params['params'] = (k, d)
+                best_model = clf
+            # print(f'KNN {d} k={k}')
+        values[d] = y_tst_values
+    print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
+    plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True)
+
+    return best_model, best_params
