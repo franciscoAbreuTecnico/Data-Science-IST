@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 # read class_pos_covid_derived_prepared
-filename = 'dataset_health/class_pos_covid_derived_prepared.csv'
+filename = 'dataset_health/data/class_pos_covid_derived_prepared.csv'
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 df_mv: DataFrame = mvi_by_filling(data, strategy="frequent")
 
@@ -44,18 +44,18 @@ else:
     print("There are no numeric variables")
 
 
-vars: list[str] = df.columns.to_list()
-target_data: Series = df.pop(target)
-transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(
-    df
-)
-df_zscore = DataFrame(transf.transform(df), index=df.index)
-df_zscore[target] = target_data
+#vars: list[str] = df.columns.to_list()
+#target_data: Series = df.pop(target)
+#transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(
+#    df
+#)
+#df_zscore = DataFrame(transf.transform(df), index=df.index)
+#df_zscore[target] = target_data
 # df_zscore.columns = vars
 
 
 
-target_count: Series = df_zscore[target].value_counts()
+target_count: Series = df[target].value_counts()
 positive_class = target_count.idxmin()
 negative_class = target_count.idxmax()
 
@@ -71,8 +71,8 @@ values: dict[str, list] = {
 }
 
 
-df_positives: Series = df_zscore[df_zscore[target] == positive_class]
-df_negatives: Series = df_zscore[df_zscore[target] == negative_class]
+df_positives: Series = df[df[target] == positive_class]
+df_negatives: Series = df[df[target] == negative_class]
 
 
 df_neg_sample: DataFrame = DataFrame(df_negatives.sample(len(df_positives)))
@@ -88,11 +88,11 @@ print("Proportion:", round(len(df_positives) / len(df_neg_sample), 2), ": 1")
 RANDOM_STATE = 42
 
 smote: SMOTE = SMOTE(sampling_strategy="minority", random_state=RANDOM_STATE)
-y = df_zscore.pop(target).values
-X: ndarray = df_zscore.values
+y = df.pop(target).values
+X: ndarray = df.values
 smote_X, smote_y = smote.fit_resample(X, y)
 df_smote: DataFrame = concat([DataFrame(smote_X), DataFrame(smote_y)], axis=1)
-df_smote.columns = list(df_zscore.columns) + [target]
+df_smote.columns = list(df.columns) + [target]
 df_smote.to_csv(f"dataset_health/data/covid_smote.csv", index=False)
 
 smote_target_count: Series = Series(smote_y).value_counts()
@@ -106,12 +106,13 @@ print(
 print(df_smote.shape)
 
 
-target_data: Series = test.pop(target)
-scaled_test: DataFrame = DataFrame(transf.transform(test), index=test.index)
-scaled_test[target] = target_data
-scaled_test_copy: DataFrame = scaled_test.copy(deep=True)
-scaled_test_copy2: DataFrame = scaled_test.copy(deep=True)
-
+target_data: Series = test.copy(deep=True).pop(target)
+#scaled_test: DataFrame = DataFrame(transf.transform(test), index=test.index)
+#scaled_test[target] = target_data
+#scaled_test_copy: DataFrame = scaled_test.copy(deep=True)
+#scaled_test_copy2: DataFrame = scaled_test.copy(deep=True)
+test_copy = test.copy(deep=True)
+test_copy2 = test.copy(deep=True)
 
 df_pos_sample: DataFrame = DataFrame(
     df_positives.sample(len(df_negatives), replace=True)
@@ -119,22 +120,22 @@ df_pos_sample: DataFrame = DataFrame(
 df_over: DataFrame = concat([df_pos_sample, df_negatives], axis=0)
 
 figure()
-eval: dict[str, list] = evaluate_approach(df_over, scaled_test_copy2, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+eval: dict[str, list] = evaluate_approach(df_over, test_copy, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid over evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_over_eval.png")
+savefig(f"dataset_health/preparation/balancing_images/covid_over_eval.png")
 
 figure()
-eval: dict[str, list] = evaluate_approach(df_under, scaled_test, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+eval: dict[str, list] = evaluate_approach(df_under, test_copy2, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid under evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_under_eval.png")
+savefig(f"dataset_health/preparation/balancing_images/covid_under_eval.png")
 
 figure()
-eval: dict[str, list] = evaluate_approach(df_smote, scaled_test_copy, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+eval: dict[str, list] = evaluate_approach(df_smote, test, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid SMOTE evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_smote_eval.png")
+savefig(f"dataset_health/preparation/balancing_images/covid_smote_eval.png")

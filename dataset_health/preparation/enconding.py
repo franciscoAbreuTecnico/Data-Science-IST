@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Read
-filename = 'class_pos_covid_derived.csv'
+filename = 'dataset_health/data/class_pos_covid_derived.csv'
 file_tag = 'covid_fig_'
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 
@@ -209,4 +209,4 @@ for binary in binaries:
     data[binary] = data[binary].apply(lambda x: 0 if x == "Female" else x)
     data[binary] = data[binary].apply(lambda x: 1 if x == "Male" else x)
 
-data.to_csv('../class_pos_covid_derived_prepared.csv', index=False)
+data.to_csv('dataset_health/data/class_pos_covid_derived_prepared.csv', index=False)

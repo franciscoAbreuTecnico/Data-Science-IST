@@ -19,7 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 # read class_pos_covid_derived_prepared
-filename = 'dataset_health/class_pos_covid_derived_prepared.csv'
+filename = "dataset_health/data/class_pos_covid_derived_prepared.csv"
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 df_mv: DataFrame = mvi_by_filling(data, strategy="frequent")
 
@@ -65,20 +65,20 @@ df_zscore.boxplot(ax=axs[0, 1])
 axs[0, 2].set_title("MinMax normalization")
 df_minmax.boxplot(ax=axs[0, 2])
 # show()
-fig.savefig('dataset_health/images/normalized_data_boxplots.png')
+fig.savefig('dataset_health/preparation/scaling_images/normalized_data_boxplots.png')
 
 figure()
-eval: dict[str, list] = evaluate_approach(df_zscore, test, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+eval: dict[str, list] = evaluate_approach(df_zscore, test.copy(deep=True), target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid zscore normalization evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_zscore_norm_eval.png")
+savefig(f"dataset_health/preparation/scaling_images/covid_zscore_norm_eval.png")
 
 figure()
-eval: dict[str, list] = evaluate_approach(df_minmax, test, target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
+eval: dict[str, list] = evaluate_approach(df_minmax, test.copy(deep=True), target=target, metric="recall", estimators_names= ["GaussianNB", "BernoulliNB"])
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid minmax normalization evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_minmax_norm_eval.png")
+savefig(f"dataset_health/preparation/scaling_images/covid_minmax_norm_eval.png")
 
 

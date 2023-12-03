@@ -19,7 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # read class_pos_covid_derived_prepared
-filename = 'dataset_health/class_pos_covid_derived_prepared.csv'
+filename = 'dataset_health/data/class_pos_covid_derived_prepared.csv'
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 df_mv: DataFrame = mvi_by_filling(data, strategy="frequent")
 
@@ -48,10 +48,9 @@ eval: dict[str, list] = evaluate_approach(df, test, target=target, metric="recal
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid drop outliers evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_drop_out_eval.png")
+savefig(f"dataset_health/preparation/outliers_images/covid_drop_out_eval.png")
 
 
-filename = 'dataset_health/class_pos_covid_derived_prepared.csv'
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 df_mv: DataFrame = mvi_by_filling(data, strategy="frequent")
 
@@ -75,7 +74,7 @@ eval: dict[str, list] = evaluate_approach(df, test, target=target, metric="recal
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"Covid replace outliers evaluation", percentage=True
 )
-savefig(f"dataset_health/images/covid_replace_out_eval.png")
+savefig(f"dataset_health/preparation/outliers_images/covid_replace_out_eval.png")
 
 
 
