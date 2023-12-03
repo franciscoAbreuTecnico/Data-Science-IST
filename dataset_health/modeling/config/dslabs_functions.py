@@ -21,7 +21,7 @@ from sklearn.metrics import confusion_matrix, RocCurveDisplay
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 
-from config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
+from config.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
 NR_COLUMNS: int = 3
 HEIGHT: int = 4
@@ -417,7 +417,7 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
         yvalues.append(eval)
 
     plot_bar_chart(xvalues, yvalues, title=f'Naive Bayes Models ({metric})', ylabel=metric, percentage=True)
-    savefig(f'images/{file_tag}_nb_{metric}_study.png')
+    #savefig(f'images/{file_tag}_nb_{metric}_study.png')
     
     return best_model, best_params
 
