@@ -6,7 +6,7 @@ author:     Claudia Antunes
 from math import pi, sin, cos, ceil
 from itertools import product
 from datetime import datetime
-from typing import Callable
+from typing import Callable, Literal
 from numpy import array, ndarray, arange, std, set_printoptions
 from matplotlib.collections import PathCollection
 from matplotlib.colorbar import Colorbar
@@ -17,6 +17,7 @@ from matplotlib.axes import Axes
 from matplotlib.pyplot import gca, gcf, savefig, subplots
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib import pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
 
 # from matplotlib.dates import _reset_epoch_test_example, set_epoch
 from pandas import DataFrame, Series, Index, Period
@@ -955,3 +956,99 @@ def evaluate_approach_2(train, test, target='class', metric='accuracy'):
     plot_confusion_matrix(cnf_matrix, np.unique(tstY), ax=ax[0])
     plot_roc_chart(tstY, predictions, ax=ax[1], target=target)
     plt.show()
+
+def naive_Bayes_study(
+    trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, metric: str = "accuracy"
+) -> tuple:
+    estimators: dict = {
+        "GaussianNB": GaussianNB(),
+        #"MultinomialNB": MultinomialNB(),
+        "BernoulliNB": BernoulliNB(),
+    }
+
+    xvalues: list = []
+    yvalues: list = []
+    best_model = None
+    best_params: dict = {"name": "", "metric": metric, "params": ()}
+    best_performance = 0
+    for clf in estimators:
+        xvalues.append(clf)
+        estimators[clf].fit(trnX, trnY)
+        prdY: array = estimators[clf].predict(tstX)
+        eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if eval - best_performance > DELTA_IMPROVE:
+            best_performance: float = eval
+            best_params["name"] = clf
+            best_params[metric] = eval
+            best_model = estimators[clf]
+        yvalues.append(eval)
+        # print(f'NB {clf}')
+    plot_bar_chart(
+        xvalues,
+        yvalues,
+        title=f"Naive Bayes Models ({metric})",
+        ylabel=metric,
+        percentage=True,
+    )
+
+    return best_model, best_params
+
+def knn_study(
+        trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, k_max: int=19, lag: int=2, metric='accuracy'
+        ) -> tuple[KNeighborsClassifier | None, dict]:
+    dist: list[Literal['manhattan', 'euclidean', 'chebyshev']] = ['manhattan', 'euclidean', 'chebyshev']
+
+    kvalues: list[int] = [2, 191, 439, 709, 997]
+    best_model: KNeighborsClassifier | None = None
+    best_params: dict = {'name': 'KNN', 'metric': metric, 'params': ()}
+    best_performance: float = 0.0
+
+    values: dict[str, list] = {}
+    for d in dist:
+        y_tst_values: list = []
+        for k in kvalues:
+            clf = KNeighborsClassifier(n_neighbors=k, metric=d)
+            clf.fit(trnX, trnY)
+            prdY: array = clf.predict(tstX)
+            eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+            y_tst_values.append(eval)
+            if eval - best_performance > DELTA_IMPROVE:
+                best_performance: float = eval
+                best_params['params'] = (k, d)
+                best_model = clf
+            # print(f'KNN {d} k={k}')
+        values[d] = y_tst_values
+    print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
+    plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True)
+
+    return best_model, best_params
+
+def trees_study(
+        trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, d_max: int=10, lag:int=2, metric='accuracy'
+        ) -> tuple:
+    criteria: list[Literal['entropy', 'gini']] = ['entropy', 'gini']
+    depths: list[int] = [i for i in range(2, d_max+1, 8)]
+
+    best_model: DecisionTreeClassifier | None = None
+    best_params: dict = {'name': 'DT', 'metric': metric, 'params': ()}
+    best_performance: float = 0.0
+
+    values: dict = {}
+    for c in criteria:
+        y_tst_values: list[float] = []
+        for d in depths:
+            clf = DecisionTreeClassifier(max_depth=d, criterion=c, min_impurity_decrease=0)
+            clf.fit(trnX, trnY)
+            prdY: array = clf.predict(tstX)
+            eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+            y_tst_values.append(eval)
+            if eval - best_performance > DELTA_IMPROVE:
+                best_performance = eval
+                best_params['params'] = (c, d)
+                best_model = clf
+            # print(f'DT {c} and d={d}')
+        values[c] = y_tst_values
+    print(f'DT best with {best_params['params'][0]} and d={best_params['params'][1]}')
+    plot_multiline_chart(depths, values, title=f'DT Models ({metric})', xlabel='d', ylabel=metric, percentage=True)
+
+    return best_model, best_params
