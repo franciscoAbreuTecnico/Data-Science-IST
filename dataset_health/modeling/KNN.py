@@ -7,7 +7,7 @@ file_tag = "covid"
 train_filename = "dataset_health/data/covid_under.csv"
 test_filename = "dataset_health/data/test.csv"
 target = "CovidPos"
-eval_metric = "f1"
+eval_metric = "precision"
 
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(
@@ -16,7 +16,7 @@ trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(
 
 
 figure()
-best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=100, metric=eval_metric)
+best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=7, metric=eval_metric)
 savefig(f'dataset_health/modeling/KNN_images/{file_tag}_knn_{eval_metric}_study.png')
 show()
 
