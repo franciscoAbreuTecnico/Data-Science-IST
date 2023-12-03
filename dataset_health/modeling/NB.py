@@ -23,7 +23,7 @@ savefig(f"dataset_health/modeling/NB_images/{file_tag}_nb_{eval_metric}_study.pn
 
 
 figure(figsize=(4,5))
-best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "recall")
+best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "f1")
 savefig(f"dataset_health/modeling/NB_images/{file_tag}_nb_recall_study.png")
 show()
 

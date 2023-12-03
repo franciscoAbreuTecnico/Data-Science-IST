@@ -446,7 +446,7 @@ def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_t
     print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
 
     plot_multiple_line_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True)
-    savefig(f'images/{file_tag}_knn_{metric}_study.png')
+    #savefig(f'images/{file_tag}_knn_{metric}_study.png')
 
     return best_model, best_params
 
