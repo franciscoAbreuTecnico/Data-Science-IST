@@ -1,16 +1,22 @@
+import sys
+sys.path.append('.')
+sys.path.append('config')
+
 from pandas import read_csv, DataFrame
 from matplotlib.pyplot import figure, savefig, show
-from config.dslabs_functions import plot_bar_chart, get_variable_types
+from dslabs_functions import plot_bar_chart, get_variable_types
 
 filename = "dataset_health/data/class_pos_covid.csv"
 data: DataFrame = read_csv(filename, sep=',', decimal='.', na_values='')
+
+images_path: str = "dataset_health/profiling/dimensionalty/images/"
 
 figure(figsize=(4, 2))
 values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shape[1]}
 plot_bar_chart(
     list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
 )
-savefig(f"dataset_health/profiling/images/covid_records_variables.png")
+savefig(f"{images_path}covid_records_variables.png", bbox_inches='tight')
 show()
 
 
@@ -28,7 +34,7 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"dataset_health/profiling/images/covid_mv.png")
+savefig(f"{images_path}covid_mv.png", bbox_inches='tight')
 show()
 
 
@@ -41,5 +47,5 @@ figure(figsize=(4, 2))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"dataset_health/profiling/images/covid_variable_types.png")
+savefig(f"{images_path}covid_variable_types.png",  bbox_inches='tight')
 show()

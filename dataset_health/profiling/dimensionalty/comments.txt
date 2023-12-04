@@ -1,0 +1,3 @@
+covid_records_variables.png -> We don't have the problem of high dimensionaliry here because there are more records than variables (380932 vs 40). 
+covid_mv.png -> Having 380932 records and 34687 missing values, we can say that the percentage of missing values is 9.1% for the most variable (TetanusLast10Tdap) that isn't a lot. 
+covid_variable_types.png -> giving the types of the variables, we can see that there are 3 types of variables: 6 numeric, 24 binary and 10 symbolic. In this dataset we didnt have any date variables.
