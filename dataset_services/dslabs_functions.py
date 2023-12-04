@@ -998,7 +998,7 @@ def knn_study(
         ) -> tuple[KNeighborsClassifier | None, dict]:
     dist: list[Literal['manhattan', 'euclidean', 'chebyshev']] = ['manhattan', 'euclidean', 'chebyshev']
 
-    kvalues: list[int] = [2, 191, 439, 709, 997]
+    kvalues: list[int] = [1, 2, 191, 439, 709, 997]
     best_model: KNeighborsClassifier | None = None
     best_params: dict = {'name': 'KNN', 'metric': metric, 'params': ()}
     best_performance: float = 0.0
