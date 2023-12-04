@@ -29,6 +29,8 @@ df_mv: DataFrame = mvi_by_filling(data, strategy="frequent")
 target = 'CovidPos'
 train, test = train_test_split(df_mv, test_size=0.2)
 
+test.to_csv(f"dataset_health/data/test.csv", index=False)
+
 n_std: int = NR_STDEV
 numeric_vars: list[str] = get_variable_types(train)["numeric"]
 if numeric_vars is not None:
