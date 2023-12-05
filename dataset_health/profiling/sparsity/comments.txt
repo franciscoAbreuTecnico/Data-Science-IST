@@ -1,0 +1,2 @@
+No variables aare 100% correlated, but BMI and WeightInKilograms are very correlated, this is because BMI is calculated from weight and height.
+However, BMI and HeightInMeters are not correlated.
