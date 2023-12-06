@@ -18,6 +18,7 @@ from matplotlib.pyplot import gca, gcf, savefig, subplots
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib import pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
 
 # from matplotlib.dates import _reset_epoch_test_example, set_epoch
 from pandas import DataFrame, Series, Index, Period
@@ -998,7 +999,9 @@ def knn_study(
         ) -> tuple[KNeighborsClassifier | None, dict]:
     dist: list[Literal['manhattan', 'euclidean', 'chebyshev']] = ['manhattan', 'euclidean', 'chebyshev']
 
-    kvalues: list[int] = [1, 2, 191, 439, 709, 997]
+    kvalues: list[int] = [1, 2, 3, 5, 281]
+    #kvalues: list[int] = [i for i in range(1, k_max+1, lag)]
+    #kvalues: list[int] = [1, 2, 191, 439, 709, 997]
     best_model: KNeighborsClassifier | None = None
     best_params: dict = {'name': 'KNN', 'metric': metric, 'params': ()}
     best_performance: float = 0.0
@@ -1050,5 +1053,75 @@ def trees_study(
         values[c] = y_tst_values
     print(f'DT best with {best_params['params'][0]} and d={best_params['params'][1]}')
     plot_multiline_chart(depths, values, title=f'DT Models ({metric})', xlabel='d', ylabel=metric, percentage=True)
+
+    return best_model, best_params
+
+def mlp_study(
+    trnX: ndarray,
+    trnY: array,
+    tstX: ndarray,
+    tstY: array,
+    nr_max_iterations: int = 2500,
+    lag: int = 500,
+    metric: str = "accuracy",
+) -> tuple[MLPClassifier | None, dict]:
+    nr_iterations: list[int] = [lag] + [
+        i for i in range(2 * lag, nr_max_iterations + 1, lag)
+    ]
+
+    lr_types: list[Literal["constant", "invscaling", "adaptive"]] = [
+        "constant",
+        "invscaling",
+        "adaptive",
+    ]  # only used if optimizer='sgd'
+    learning_rates: list[float] = [0.5, 0.05, 0.005, 0.0005]
+
+    best_model: MLPClassifier | None = None
+    best_params: dict = {"name": "MLP", "metric": metric, "params": ()}
+    best_performance: float = 0.0
+
+    values: dict = {}
+    _, axs = subplots(
+        1, len(lr_types), figsize=(len(lr_types) * HEIGHT, HEIGHT), squeeze=False
+    )
+    for i in range(len(lr_types)):
+        type: str = lr_types[i]
+        values = {}
+        for lr in learning_rates:
+            warm_start: bool = False
+            y_tst_values: list[float] = []
+            for j in range(len(nr_iterations)):
+                clf = MLPClassifier(
+                    learning_rate=type,
+                    learning_rate_init=lr,
+                    max_iter=lag,
+                    warm_start=warm_start,
+                    activation="logistic",
+                    solver="sgd",
+                    verbose=False,
+                )
+                clf.fit(trnX, trnY)
+                prdY: array = clf.predict(tstX)
+                eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+                y_tst_values.append(eval)
+                warm_start = True
+                if eval - best_performance > DELTA_IMPROVE:
+                    best_performance = eval
+                    best_params["params"] = (type, lr, nr_iterations[j])
+                    best_model = clf
+                # print(f'MLP lr_type={type} lr={lr} n={nr_iterations[j]}')
+            values[lr] = y_tst_values
+        plot_multiline_chart(
+            nr_iterations,
+            values,
+            ax=axs[0, i],
+            title=f"MLP with {type}",
+            xlabel="nr iterations",
+            ylabel=metric,
+            percentage=True,
+        )
+    print(
+        f'MLP best for {best_params["params"][2]} iterations (lr_type={best_params["params"][0]} and lr={best_params["params"][1]}'
+    )
 
     return best_model, best_params

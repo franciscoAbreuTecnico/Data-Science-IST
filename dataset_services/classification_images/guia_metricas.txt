@@ -1,0 +1,14 @@
+-> PRECISION is most important (minimizing the risk of classifying a good credit score as bad)
+-This is particularly important in situations where there could be significant negative consequences for individuals incorrectly classified as high risk, such as denial of credit or higher interest rates.
+- If the cost of a false positive is high (i.e., wrongly classifying a good credit score as poor), this could lead to lost opportunities, damage to customer relationships, and a negative impact on the company's reputation. In such cases, a high precision is crucial to avoid these outcomes.
+
+-> RECALL  is most important (minimizing the risk of missing a bad credit score)
+-High recall means that your model is good at identifying most of the individuals who truly have poor credit. This is critical in situations where missing out on identifying high-risk individuals could lead to significant financial losses, as it would mean extending credit to those who are likely to default
+-If the cost of a false negative is high (i.e., failing to identify a poor credit score), this could result in financial losses due to default. Here, a high recall would be important to ensure that potential defaulters are identified and managed appropriately.
+-A high recall is important in this context because it means the model is capturing most of the true poor credit scores (true positives). It's a priority to catch as many potential defaulters as possible to mitigate risk and prevent financial loss. In this scenario, the lender is willing to accept more false positives (incorrectly predicting a poor credit score for someone with a good credit score) in order to reduce the number of false negatives (missing a poor credit score).
+
+-> BALANCE between precision and recall (which is often the case in credit scoring to balance the risk of false positives and false negatives)
+
+-> F1 score is more about the model's accuracy at a particular threshold
+
+-> AUC is about the model's ability to rank predictions correctly regardless of the threshold
