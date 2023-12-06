@@ -1,0 +1,7 @@
+covid_global_boxplot.png -> It is possible to see the boxplot of all numeric variables on their original scale. No outliers were detected at this stage.
+covid_single_boxplots.png -> """
+covid_outliers_standart.png -> using the function given in the dslabs_functions.py file, it is possible to see the number of outliers per variable. It is possible to see that there are a lot of outliers in the variables "PhysicalHealthDays" and "MentalHealthDays". Probably because the median of these variables is 0.
+TODO fazer outliers sem ser standard... (usar stdev pq é mais facil de depois retirar)
+covid_class_dist.png -> It is possible to see that the target variable is imbalanced, with the value "No" being more frequent than the value "Yes". So the positive (minority) class is the value "Yes". 270055 and 110877 so we have a percentage of around 70% to 30%.
+covid_histograms_numeric.png -> It is possible to see the histograms of all numeric variables. It is possible to see that the variables "PhysicalHealthDays" and "MentalHealthDays" have a lot of values equal to 0. The others have a distribution near the normal distribution. TODO fazer histogramas com as funções desenhadas (DSLabs)
+covid_histograms_symbolic.png -> it is possible to see the distribution of the symbolic variables, none of the variables have a distribution that is too unbalanced that we can consider it as redundant.

@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+sys.path.append('config')
 from pandas import Series, read_csv, DataFrame
 from matplotlib.pyplot import figure, savefig, show, subplots
 from matplotlib.figure import Figure
@@ -22,19 +25,20 @@ filename = "dataset_health/data/class_pos_covid.csv"
 data: DataFrame = read_csv(filename, sep=',', decimal='.', na_values='')
 
 
-
+# Boxplot of all numeric variables
 variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
 if [] != numeric:
     # Create the boxplot
     data[numeric].boxplot(rot=45)
     plt.title('Global Boxplot of Numeric Variables', fontsize=7)
-    savefig(f"dataset_health/profiling/images/covid_global_boxplot", bbox_inches='tight')
+    savefig(f"dataset_health/profiling/distribution/images/covid_global_boxplot.png", bbox_inches='tight')
+    show()
 else:
     print("There are no numeric variables.")
 
-# single variables boxplots
 
+# single Boxplot per numeric variable
 numeric: list[str] = variables_types["numeric"]
 
 if [] != numeric:
@@ -47,20 +51,20 @@ if [] != numeric:
         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
     )
     i, j = 0, 0
-    plt.suptitle('Single Variables Boxplots', fontsize=11)
+    plt.suptitle('Single Numeric Variables Boxplots', fontsize=11)
 
     for n in range(len(numeric)):
         axs[i, j].set_title("Boxplot for %s" % numeric[n])
         axs[i, j].boxplot(data[numeric[n]].dropna().values)
         axs[i, j].set_xticklabels([numeric[n]])  # Set the label to the variable name
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-
-    plt.savefig(f"dataset_health/profiling/images/covid_single_boxplots.png")
+    plt.savefig(f"dataset_health/profiling/distribution/images/covid_single_boxplots.png")
+    show()
 else:
     print("There are no numeric variables.")
 
-# Outliers study
 
+# Outliers study 
 if [] != numeric:
     outliers: dict[str, int] = count_outliers(data, numeric)
     figure(figsize=(12, HEIGHT))
@@ -72,7 +76,8 @@ if [] != numeric:
         ylabel="nr outliers",
         percentage=False,
     )
-    savefig(f"dataset_health/profiling/images/covid_outliers_standart.png")
+    savefig(f"dataset_health/profiling/distribution/images/covid_outliers_standart.png")
+    show()
 else:
     print("There are no numeric variables.")
 
@@ -88,10 +93,11 @@ plot_bar_chart(
     values.to_list(),
     title=f"Target distribution (target={target})",
 )
-savefig(f"dataset_health/profiling/images/covid_class_dist.png")
+savefig(f"dataset_health/profiling/distribution/images/covid_class_dist.png")
+show()
+
 
 # Numeric Histograms
-
 if [] != numeric:
     fig, axs = subplots(
         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
@@ -108,9 +114,11 @@ if [] != numeric:
         )
         axs[i, j].hist(data[numeric[n]].dropna().values, "auto")
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"dataset_health/profiling/images/covid_histograms_numeric.png")
+    savefig(f"dataset_health/profiling/distribution/images/covid_histograms_numeric.png")
+    show()
 else:
     print("There are no numeric variables.")
+
 
 # Other Histograms
 max_label_length = 15  # Define the maximum length for x-axis labels
@@ -144,7 +152,7 @@ if [] != symbolic:
         )
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
 
-    savefig(f"dataset_health/profiling/images/covid_histograms_symbolic.png", bbox_inches='tight')
+    savefig(f"dataset_health/profiling/distribution/images/covid_histograms_symbolic.png", bbox_inches='tight')
     show()
 else:
     print("There are no symbolic variables.")
