@@ -49,6 +49,7 @@ plot_multibar_chart(
 savefig(f"dataset_health/preparation/mv_imputation_images/covid_mv_mean_eval.png")
 
 
+
 # read class_pos_covid_derived_prepared
 data = pd.read_csv(filename, sep=',', decimal='.', na_values='')
 df: DataFrame = mvi_by_filling(data, strategy="knn")

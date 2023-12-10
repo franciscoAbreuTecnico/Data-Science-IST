@@ -1,0 +1,42 @@
+## ENCODING ##
+TODO think about an encoding scheme for the data
+For variable encoding, we changed the values of the symbolic variables
+to numerical values. The following is a list of the variables and the
+encoding we used for each variable:
+- State: we replaced the states with the latitude and longitude values
+- GeneralHealth: we replace the values with numbers from 0 to 4, 4 being the best
+- LastCheckupTime: we replace the values with numbers from 0 to 3, 0 being the best
+- RemovedTeeth: we replace the values with numbers from 0 to 3, 0 being the best
+- HadDiabetes: we replace the values with numbers from 0 to 3, 0 being the best
+- SmokerStatus: we replace the values with numbers from 0 to 3, 0 being the best
+- ECigaretteUsage: we replace the values with numbers from 0 to 3, 0 being the best
+- RaceEthnicityCategory: we replace the values with numbers from 0 to 4, 0 being the best
+- AgeCategory: we replace the age groupings with numbers from 0 to 12, 0 being the highest
+- TetanusLast10Tdap: we replace the values with numbers from 0 to 3, 0 being the best
+- AgeGroup: we replace the values with numbers from 0 to 3, 0 being the highest
+
+
+## DATA MV INPUTATION ##
+To deal with missing values, we used the following methods:
+-   Frequent: replace missing values with the most frequent value of the variable
+-   Mean: replace missing values with the mean of the variable
+-   KNN: replace missing values with the mean of the K nearest neighbors
+None of these methods performed significantly better than the others, so we
+decided to use the knn method for the final model. Because its easy to apply when
+the model is being used. And the performence was slightly better than the other
+two methods. 
+Results:
+        frequent, knn, mean 
+accuracy:  65 - 64 | 3 worse
+recall:    41 - 42 | 3 better
+precision: 40 -  - | -
+auc:       58 -  - | -
+f1:        40 41 - | 1 worse
+
+accuracy:  61 62 61| 2 better
+recall:    34 -  - | -
+precision: 33 34 - | 1 worse
+auc:       53 -  - | -
+f1:        33 34 - | 1 worse
+
+

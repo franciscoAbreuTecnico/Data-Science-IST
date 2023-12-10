@@ -1,3 +1,7 @@
+import sys
+sys.path.append('.')
+sys.path.append('config')
+
 import pandas as pd
 
 from dslabs_functions import (
@@ -210,3 +214,5 @@ for binary in binaries:
     data[binary] = data[binary].apply(lambda x: 1 if x == "Male" else x)
 
 data.to_csv('dataset_health/data/class_pos_covid_derived_prepared.csv', index=False)
+
+
