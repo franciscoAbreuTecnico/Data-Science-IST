@@ -23,7 +23,7 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{file_tag} daily {target}",
+    title=f"{file_tag} weekly {target}",
 )
 show()
-savefig("forecasting_health/profiling/images/covid_daily_reading.png")
+savefig("forecasting_health/profiling/images/covid_weekly_reading.png")
