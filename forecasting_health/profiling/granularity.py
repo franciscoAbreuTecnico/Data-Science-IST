@@ -1,12 +1,13 @@
 from pandas import read_csv, DataFrame, Series
 from matplotlib.pyplot import figure, show, savefig
-from config.dslabs_functions import plot_line_chart, HEIGHT, ts_aggregation_by, plot_multiline_chart, autocorrelation_study, eval_stationarity
+from config.dslabs_functions import plot_line_chart, HEIGHT, ts_aggregation_by, plot_multiline_chart, autocorrelation_study, eval_stationarity, plot_components
 from numpy import array
 from matplotlib.pyplot import show, subplots, plot, legend
 from matplotlib.figure import Figure
-from config.dslabs_functions import set_chart_labels
+from config.dslabs_functions import set_chart_labels, plot_line_chart
 from statsmodels.tsa.stattools import adfuller
-
+from pandas import DataFrame, Series, read_csv
+from matplotlib.pyplot import figure, show
 
 file_tag = "covid"
 target = "deaths"
@@ -106,6 +107,18 @@ autocorrelation_study(series, 10, 1)
 
 show()
 savefig("forecasting_health/profiling/images/covid_autocorrelation_study.png")
+
+
+
+
+plot_components(
+    series,
+    title=f"{file_tag} hourly {target}",
+    x_label=series.index.name,
+    y_label=target,
+)
+show()
+savefig("forecasting_health/profiling/images/covid_components_study.png")
 
 
 
