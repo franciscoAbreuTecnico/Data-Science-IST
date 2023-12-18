@@ -50,6 +50,38 @@ plot_forecasting_series(
 savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_first_forecast.png")
 
 
+
+
+
+data: Series = ts_aggregation_by(data, "M")
+
+train, test = series_train_test_split(data, trn_pct=0.90)
+
+trnX = arange(len(train)).reshape(-1, 1)
+trnY = train.to_numpy()
+tstX = arange(len(train), len(data)).reshape(-1, 1)
+tstY = test.to_numpy()
+
+model = LinearRegression()
+model.fit(trnX, trnY)
+
+prd_trn: Series = Series(model.predict(trnX), index=train.index)
+prd_tst: Series = Series(model.predict(tstX), index=test.index)
+
+plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
+savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_second_eval.png")
+
+plot_forecasting_series(
+    train,
+    test,
+    prd_tst,
+    title=f"{file_tag} - Linear Regression",
+    xlabel=timecol,
+    ylabel=target,
+)
+savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_second_forecast.png")
+
+
 file_tag = "covid"
 target = "deaths"
 timecol: str = "date"
@@ -90,36 +122,6 @@ plot_forecasting_series(
     ylabel=target,
 )
 savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_third_forecast.png")
-
-
-data: Series = ts_aggregation_by(data, "M")
-
-train, test = series_train_test_split(data, trn_pct=0.90)
-
-trnX = arange(len(train)).reshape(-1, 1)
-trnY = train.to_numpy()
-tstX = arange(len(train), len(data)).reshape(-1, 1)
-tstY = test.to_numpy()
-
-model = LinearRegression()
-model.fit(trnX, trnY)
-
-prd_trn: Series = Series(model.predict(trnX), index=train.index)
-prd_tst: Series = Series(model.predict(tstX), index=test.index)
-
-plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
-savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_second_eval.png")
-
-plot_forecasting_series(
-    train,
-    test,
-    prd_tst,
-    title=f"{file_tag} - Linear Regression",
-    xlabel=timecol,
-    ylabel=target,
-)
-savefig(f"forecasting_health/transformation/transformation_images/{file_tag}_granularity_second_forecast.png")
-
 
 
 
