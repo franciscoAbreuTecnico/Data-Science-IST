@@ -33,6 +33,7 @@ from matplotlib.pyplot import setp
 from matplotlib.gridspec import GridSpec
 from matplotlib.pyplot import figure
 from statsmodels.tsa.stattools import adfuller
+from sklearn.preprocessing import StandardScaler
 
 from config import (
     ACTIVE_COLORS,
@@ -251,7 +252,8 @@ def plot_multibar_chart(
         format = "%.2f" if percentage else "%.0f"
         ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
         if any(y < 0 for y in bar_yvalues) and percentage:
-            ax.set_ylim(-1.0, 1.0)
+            #ax.set_ylim(-1.0, 1.0)
+            ax.set_ylim(-10.0, 1.0)
     ax.legend(fontsize="xx-small")
     return ax
 
@@ -938,3 +940,10 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
     ax.set_title("Autocorrelation")
     ax.set_xlabel("Lags")
     return
+
+def scale_all_dataframe(data: DataFrame) -> DataFrame:
+    vars: list[str] = data.columns.to_list()
+    transf: StandardScaler = StandardScaler().fit(data)
+    df = DataFrame(transf.transform(data), index=data.index)
+    df.columns = vars
+    return df
