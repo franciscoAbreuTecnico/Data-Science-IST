@@ -233,7 +233,7 @@ def plot_multibar_chart(
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     if percentage:
-        ax.set_ylim(0.0, 1.0)
+        ax.set_ylim(0.0, 2.0)
     bar_labels: list = list(yvalues.keys())
 
     # This is the location for each bar
@@ -249,11 +249,13 @@ def plot_multibar_chart(
             width=bar_width,
             label=bar_labels[i],
         )
-        format = "%.2f" if percentage else "%.0f"
+        format = "%.2f" if percentage else "%.2f"
         ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
         if any(y < 0 for y in bar_yvalues) and percentage:
             #ax.set_ylim(-1.0, 1.0)
-            ax.set_ylim(-10.0, 1.0)
+            ax.set_ylim(-2.0, 2.0)
+        elif any(y > 1.5 for y in bar_yvalues):
+            ax.set_ylim(0.0, 2.0)
     ax.legend(fontsize="xx-small")
     return ax
 
@@ -938,6 +940,7 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
         ax.set_ylabel("original")
     ax = fig.add_subplot(gs[1, :])
     ax.acorr(series, maxlags=max_lag)
+    #ax.acorr(series, maxlags=max_lag, normed=False)
     ax.set_title("Autocorrelation")
     ax.set_xlabel("Lags")
     return
