@@ -934,7 +934,7 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
         ax.set_xlabel(f"lag {lag}")
         ax.set_ylabel("original")
     ax = fig.add_subplot(gs[1, :])
-    ax.acorr(series, maxlags=max_lag)
+    ax.acorr(series, maxlags=max_lag, normed=False)
     ax.set_title("Autocorrelation")
     ax.set_xlabel("Lags")
     return
