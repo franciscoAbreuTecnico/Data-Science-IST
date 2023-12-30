@@ -1,0 +1,92 @@
+from pandas import read_csv, DataFrame, Series
+from matplotlib.pyplot import figure, show, savefig
+from config.dslabs_functions import plot_line_chart, HEIGHT, ts_aggregation_by, plot_multiline_chart, autocorrelation_study, eval_stationarity, plot_components
+from numpy import array, arange
+from matplotlib.pyplot import show, subplots, plot, legend
+from matplotlib.figure import Figure
+from config.dslabs_functions import set_chart_labels, plot_line_chart, series_train_test_split, plot_forecasting_eval, plot_forecasting_series
+from statsmodels.tsa.stattools import adfuller
+from pandas import DataFrame, Series, read_csv
+from matplotlib.pyplot import figure, show
+from sklearn.linear_model import LinearRegression
+
+from sklearn.preprocessing import StandardScaler
+from pandas import Series
+from sklearn.base import RegressorMixin
+
+
+from sklearn.base import RegressorMixin
+
+
+class SimpleAvgRegressor(RegressorMixin):
+    def __init__(self):
+        super().__init__()
+        self.mean: float = 0.0
+        return
+
+    def fit(self, X: Series):
+        self.mean = X.mean()
+        return
+
+    def predict(self, X: Series) -> Series:
+        prd: list = len(X) * [self.mean]
+        prd_series: Series = Series(prd)
+        prd_series.index = X.index
+        return prd_series
+
+
+
+def scale_all_dataframe(data: DataFrame) -> DataFrame:
+    vars: list[str] = data.columns.to_list()
+    transf: StandardScaler = StandardScaler().fit(data)
+    df = DataFrame(transf.transform(data), index=data.index)
+    df.columns = vars
+    return df
+
+file_tag = 'covid'
+timecol = 'date'
+target = 'deaths'
+
+data: DataFrame = read_csv(
+    "forecasting_health/data/forecast_covid_single.csv",
+    index_col="date",
+    sep=",",
+    decimal=".",
+    parse_dates=True,
+    infer_datetime_format=True,
+)
+
+ss_diff: Series = data.diff().diff()
+ss_diff = scale_all_dataframe(ss_diff)
+train, test = series_train_test_split(ss_diff, trn_pct=0.90)
+
+
+trnX = arange(len(train)).reshape(-1, 1)
+trnY = train.to_numpy()
+tstX = arange(len(train), len(ss_diff)).reshape(-1, 1)
+tstY = test.to_numpy()
+trnY[0] = 0
+trnY[1] = 0
+
+
+
+fr_mod = SimpleAvgRegressor()
+fr_mod.fit(train)
+
+prd_trn: Series = fr_mod.predict(train)
+prd_tst: Series = fr_mod.predict(test)
+
+
+
+plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
+savefig(f"forecasting_health/forecasting/images/{file_tag}_simple_average_eval.png")
+
+plot_forecasting_series(
+    train,
+    test,
+    prd_tst,
+    title=f"{file_tag} - Linear Regression",
+    xlabel=timecol,
+    ylabel=target,
+)
+savefig(f"forecasting_health/forecasting/images/{file_tag}_simple_average_forecast.png")
