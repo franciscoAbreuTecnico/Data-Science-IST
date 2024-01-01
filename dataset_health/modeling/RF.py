@@ -13,12 +13,66 @@ from dslabs_functions import (
     DELTA_IMPROVE,
     read_train_test_from_files,
 )
-from dslabs_functions import HEIGHT, plot_evaluation_results, plot_multiline_chart, random_forests_study
+from dslabs_functions import HEIGHT, plot_evaluation_results, plot_multiline_chart
+
+def random_forests_study(
+    trnX: ndarray,
+    trnY: array,
+    tstX: ndarray,
+    tstY: array,
+    nr_max_trees: int = 2500,
+    lag: int = 500,
+    metric: str = "accuracy",
+) -> tuple[RandomForestClassifier | None, dict]:
+    n_estimators: list[int] = [100] + [i for i in range(500, nr_max_trees + 1, lag)]
+    max_depths: list[int] = [2, 5, 7]
+    max_features: list[float] = [0.1, 0.3, 0.5, 0.7, 0.9]
+
+    best_model: RandomForestClassifier | None = None
+    best_params: dict = {"name": "RF", "metric": metric, "params": ()}
+    best_performance: float = 0.0
+
+    values: dict = {}
+
+    cols: int = len(max_depths)
+    _, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    for i in range(len(max_depths)):
+        d: int = max_depths[i]
+        values = {}
+        for f in max_features:
+            y_tst_values: list[float] = []
+            for n in n_estimators:
+                clf = RandomForestClassifier(
+                    n_estimators=n, max_depth=d, max_features=f
+                )
+                clf.fit(trnX, trnY)
+                prdY: array = clf.predict(tstX)
+                eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+                y_tst_values.append(eval)
+                if eval - best_performance > DELTA_IMPROVE:
+                    best_performance = eval
+                    best_params["params"] = (d, f, n)
+                    best_model = clf
+                # print(f'RF d={d} f={f} n={n}')
+            values[f] = y_tst_values
+        plot_multiline_chart(
+            n_estimators,
+            values,
+            ax=axs[0, i],
+            title=f"Random Forests with max_depth={d}",
+            xlabel="nr estimators",
+            ylabel=metric,
+            percentage=True,
+        )
+    print(
+        f'RF best for {best_params["params"][2]} trees (d={best_params["params"][0]} and f={best_params["params"][1]})'
+    )
+    return best_model, best_params
 
 file_tag = "covid"
 file_dir = "dataset_health/modeling/RF_images/"
-train_filename = "dataset_health/data/covid_under.csv"
-test_filename = "dataset_health/data/test.csv"
+train_filename = "dataset_health/data/covid_train_redundant.csv"
+test_filename = "dataset_health/data/covid_test_redundant.csv"
 target = "CovidPos"
 eval_metric = "accuracy" 
 

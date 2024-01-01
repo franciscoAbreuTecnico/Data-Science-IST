@@ -7,10 +7,10 @@ from config.dslabs_functions import plot_evaluation_results, plot_multiline_char
 from numpy import argsort
 from config.dslabs_functions import plot_horizontal_bar_chart
 file_tag = "covid"
-train_filename = "dataset_health/data/covid_under.csv"
-test_filename = "dataset_health/data/test.csv"
+train_filename = "dataset_health/data/covid_train_redundant.csv"
+test_filename = "dataset_health/data/covid_test_redundant.csv"
 target = "CovidPos"
-eval_metric = "f1"
+eval_metric = "accuracy"
 
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(

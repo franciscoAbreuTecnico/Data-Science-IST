@@ -4,10 +4,10 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from matplotlib.pyplot import figure, savefig, show
 
 file_tag = "covid"
-train_filename = "dataset_health/data/covid_under.csv"
-test_filename = "dataset_health/data/test.csv"
+train_filename = "dataset_health/data/covid_train_redundant.csv"
+test_filename = "dataset_health/data/covid_test_redundant.csv"
 target = "CovidPos"
-eval_metric = "precision"
+eval_metric = "accuracy"
 
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(
@@ -16,7 +16,7 @@ trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(
 
 
 figure()
-best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=7, metric=eval_metric)
+best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=50, metric=eval_metric)
 savefig(f'dataset_health/modeling/KNN_images/{file_tag}_knn_{eval_metric}_study.png')
 show()
 

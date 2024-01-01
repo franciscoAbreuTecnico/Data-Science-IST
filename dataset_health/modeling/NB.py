@@ -4,8 +4,8 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from matplotlib.pyplot import figure, savefig, show
 
 file_tag = "covid"
-train_filename = "dataset_health/data/covid_under.csv"
-test_filename = "dataset_health/data/test.csv"
+train_filename = "dataset_health/data/covid_train_redundant.csv"
+test_filename = "dataset_health/data/covid_test_redundant.csv"
 target = "CovidPos"
 eval_metric = "accuracy"
 
@@ -22,10 +22,6 @@ savefig(f"dataset_health/modeling/NB_images/{file_tag}_nb_{eval_metric}_study.pn
 
 
 
-figure(figsize=(4,5))
-best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "f1")
-savefig(f"dataset_health/modeling/NB_images/{file_tag}_nb_recall_study.png")
-show()
 
 
 
