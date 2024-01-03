@@ -67,7 +67,7 @@ timecol: str = "date"
 measure: str = "R2"
 
 data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
-data = data.diff().diff()
+data = data.diff()
 data.iloc[0] = 0
 data.iloc[1] = 0
 data = scale_all_dataframe(data)
@@ -91,7 +91,7 @@ from config.dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_multi
 
 
 def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
-    sequence_size = [2, 4, 8]
+    sequence_size = [1,2,3, 4, 8]
     nr_hidden_units = [25, 50, 100]
 
     step: int = nr_episodes // 10
@@ -139,6 +139,7 @@ def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
 
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
+savefig(f"forecasting_health/forecasting/images/lstsms_study.png")
 
 
 from config.dslabs_functions import plot_forecasting_eval
