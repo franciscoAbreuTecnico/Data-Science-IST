@@ -97,6 +97,8 @@ predictor = ARIMA(train, order=(3, 1, 2))
 model = predictor.fit()
 print(model.summary())
 
+model.plot_diagnostics(figsize=(2 * HEIGHT, 1.5 * HEIGHT))
+savefig(f"forecasting_health/forecasting/images/{file_tag}_arima_diagnostic.png")
 
 best_model, best_params = arima_study(train, test, measure=measure)
 savefig(f"forecasting_health/forecasting/images/{file_tag}_arima_{measure}_study.png")
