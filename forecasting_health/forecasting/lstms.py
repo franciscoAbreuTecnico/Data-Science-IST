@@ -67,7 +67,7 @@ timecol: str = "date"
 measure: str = "R2"
 
 data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
-data = data.diff()
+data = data.diff().diff()
 data.iloc[0] = 0
 data.iloc[1] = 0
 data = scale_all_dataframe(data)
