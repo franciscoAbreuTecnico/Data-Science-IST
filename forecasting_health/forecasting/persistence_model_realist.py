@@ -84,14 +84,14 @@ prd_tst: Series = fr_mod.predict(test)
 
 
 
-plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
+plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Persistence Model Realist")
 savefig(f"forecasting_health/forecasting/images/{file_tag}_persistence_model_realist_eval.png")
 
 plot_forecasting_series(
     train,
     test,
     prd_tst,
-    title=f"{file_tag} - Linear Regression",
+    title=f"{file_tag} - Persistence Model Realist",
     xlabel=timecol,
     ylabel=target,
 )

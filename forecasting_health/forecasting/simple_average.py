@@ -78,14 +78,14 @@ prd_tst: Series = fr_mod.predict(test)
 
 
 
-plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
+plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
 savefig(f"forecasting_health/forecasting/images/{file_tag}_simple_average_eval.png")
 
 plot_forecasting_series(
     train,
     test,
     prd_tst,
-    title=f"{file_tag} - Linear Regression",
+    title=f"{file_tag} - Simple Average",
     xlabel=timecol,
     ylabel=target,
 )
