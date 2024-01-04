@@ -49,7 +49,8 @@ class RollingMeanRegressor(RegressorMixin):
 
 
 def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
-    win_size = (3, 5, 10, 15, 20, 25, 30, 40, 50)
+    win_size = [i for i in range(1,179)]
+    print(win_size)
     flag = measure == "R2" or measure == "MAPE"
     best_model = None
     best_params: dict = {"name": "Rolling Mean", "metric": measure, "params": ()}
@@ -57,6 +58,7 @@ def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
 
     yvalues = []
     for w in win_size:
+        print(w)
         pred = RollingMeanRegressor(win=w)
         pred.fit(train)
         prd_tst = pred.predict(test)
