@@ -919,7 +919,7 @@ def dummify_numeric(df, vars_to_dummify):
 #selected_primes = [full_prime_list[int(i)] for i in np.linspace(0, len(full_prime_list) - 1, 10)]
 # Equally (almost) spaced numbers
 ## selected_primes = [2, 191, 439, 709, 997]
-selected_primes = [2, 109, 269, 439, 617, 811, 997]
+selected_primes = [1, 6, 12, 24, 30, 40]
 
 def run_KNN_2(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
     best_model = None
@@ -1133,12 +1133,12 @@ def random_forests_study(
     trnY: array,
     tstX: ndarray,
     tstY: array,
-    nr_max_trees: int = 2500,
-    lag: int = 500,
+    nr_max_trees: int = 2000,
+    lag: int = 250,
     metric: str = "accuracy",
 ) -> tuple[RandomForestClassifier | None, dict]:
     n_estimators: list[int] = [100] + [i for i in range(500, nr_max_trees + 1, lag)]
-    max_depths: list[int] = [2, 5, 7]
+    max_depths: list[int] =  [1, 3, 11]#[2, 5, 7]
     max_features: list[float] = [0.1, 0.3, 0.5, 0.7, 0.9]
 
     best_model: RandomForestClassifier | None = None

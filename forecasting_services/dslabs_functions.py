@@ -254,7 +254,7 @@ def plot_multibar_chart(
         if any(y < 0 for y in bar_yvalues) and percentage:
             #ax.set_ylim(-1.0, 1.0)
             ax.set_ylim(-2.0, 2.0)
-        elif any(y > 1.5 for y in bar_yvalues):
+        elif any(y > 1.5 for y in bar_yvalues) and percentage:
             ax.set_ylim(0.0, 2.0)
     ax.legend(fontsize="xx-small")
     return ax
